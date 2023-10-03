@@ -12,24 +12,27 @@ using namespace std;
 using namespace Poco;
 using namespace Poco::Net;
 
-int main(){
+int main(int argc, char* argv[]){
     //test web site
-    URI uri("http://httpbin.org");
+    // URI uri("http://httpbin.org");
+    URI uri(argv[1]);
     HTTPClientSession session(uri.getHost(), uri.getPort());
     session.setKeepAlive(true);
 
     //post body
     Poco::JSON::Object bodyObj;
-    bodyObj.set("foo","bar");
+    bodyObj.set("frame_id",100);
+    bodyObj.set("up",1);
+    bodyObj.set("down",1);
     ostringstream ss;
     bodyObj.stringify(ss);
     string body;
     body = ss.str();
 
     //request header
-    //HTTPRequest request(HTTPRequest::HTTP_GET,"/get",HTTPMessage::HTTP_1_1);
+    // HTTPRequest request(HTTPRequest::HTTP_GET,"/test",HTTPMessage::HTTP_1_1);
 
-    HTTPRequest request(HTTPRequest::HTTP_POST,"/post",HTTPMessage::HTTP_1_1);
+    HTTPRequest request(HTTPRequest::HTTP_POST,"/api/pp",HTTPMessage::HTTP_1_1);
     request.setContentType("application/json");
     request.add("User-Agent","Mozilla/5.0");
     request.setContentLength(body.length());
@@ -40,13 +43,13 @@ int main(){
     HTTPResponse response;
     istream &page = session.receiveResponse(response);
 
-    string received = "";
-    string tmp;
-    while(getline(page,tmp)){
-        received += tmp + "\n";
-    }
+    // string received = "";
+    // string tmp;
+    // while(getline(page,tmp)){
+    //     received += tmp + "\n";
+    // }
 
-    // cout << response.getStatus() << endl;
-    cout << received << endl;
+    cout << response.getStatus() << endl;
+    // cout << received << endl;
     return 0;
 }
